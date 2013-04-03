@@ -29,7 +29,7 @@ public class MachinePlayer extends Player {
 		this.gameBoard = new Board();
 		this.myColor = color;
 		this.opponentColor = 1 - color;
-		this.searchDepth = 2;//default depth
+		this.searchDepth = 1;//default depth
 	}
 
 	// Creates a machine player with the given color and search depth.  Color is
@@ -225,11 +225,11 @@ public class MachinePlayer extends Player {
 							if (isValidMove(move, player)){
 								list.insertBack(move);
 							}
-
-							//node = node.next();
+							
+							node = node.next();
 						}
 					}catch (list.InvalidNodeException e){
-						System.err.println(e);
+						//System.err.println(e);
 					}
 				}
 			}
@@ -240,7 +240,7 @@ public class MachinePlayer extends Player {
 	// Returns a new move by "this" player.  Internally records the move (updates
 	// the internal game board) as a move by "this" player.
 	public Move chooseMove() {
-		Move move = minimax(myColor, searchDepth, 0, 100).move;
+		Move move = minimax(myColor, searchDepth, LOSE, WIN).move;
 		makeMove(move, myColor);
 		return move;
 	}
@@ -313,7 +313,7 @@ public class MachinePlayer extends Player {
 
 			}
 		}catch(list.InvalidNodeException e){
-			System.err.println(e);
+			//System.err.println(e);
 		}
 		return myBest;
 	}

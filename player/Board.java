@@ -8,11 +8,11 @@ public class Board {
 	public final static int white = 1;
 	public final static int empty = -1;
 	public final static int illegal = 2;
-	
+
 	//numChips[0]:black [1]:white
 	protected int chips[] = new int[2];
-	
-	
+
+
 
 	//constructor
 	public Board(){
@@ -111,7 +111,7 @@ public class Board {
 			return true;
 		}
 	}
-	
+
 	/**
 	 * Check if a player has a valid network
 	 * @param player
@@ -121,7 +121,7 @@ public class Board {
 		if (!inGoal(player)){//no chips in both goal areas
 			return false;
 		}
-		
+
 		list.DList start = new list.DList();//chips in starting goal area, up for black, left for white
 		if (player == black){
 			for (int i = 1; i <= 6; i++){
@@ -139,90 +139,94 @@ public class Board {
 				}
 			}
 		}
-		
+
 		//System.out.println(start);
-		
+
 		dict.HashTableChained table = new dict.HashTableChained(chips[player]);
-		
+
 		list.ListNode node = start.front();
-		
+
 		try{
 			while(true){
-				
+
 				int i = ((int[])node.item())[0];
 				int j = ((int[])node.item())[1];
-				
-				
+
+
 				//System.out.println(i + " " + j);
 				//System.out.println("called");
 				boolean result = checkNetwork(i, j, 0, player, 1, table);
-				
+
 				//System.out.println(result);
-				
+
 				if (result){
 					//System.out.println("return true!!!");
 					return true;
 				}
-				
+
 				node = node.next();
 			}
 		}catch (list.InvalidNodeException e){
 			//System.err.println(e);
 		}
-		
+
 		//System.out.println("sad");
 		return false;//this line is never reached
 	}
-	
+
 	public boolean checkNetwork(int i, int j, int type, int player, int step, dict.HashTableChained table){
-		System.out.println("checkNetwork " + i + " " + j);
+		//System.out.println("checkNetwork " + i + " " + j);
 		if ((i == 7 || j == 7) && step >= 6 && step <= 10){//chip in goal area, has a win
 			//System.out.println("network");
 			return true;
 		}
-		table.insert(10*i + j, 10*i + j);
 		
+		//System.out.println("step " + step);
+		//table.insert(10*i + j, 10*i + j);
+		
+		//System.out.println("tablesize " + table.size());
+		//table.remove(10*i + j);
 		list.DList connections = connections(i, j, player);
-		
-		
+
+
 		list.ListNode node = connections.front();
-		
+
 		//System.out.println("connections" + connections);
 
 		try{
 			while(true){
+				//System.out.println("while");
 				
 				int x = ((int[])node.item())[0];
 				int y = ((int[])node.item())[1];
 				int newtype = ((int[])node.item())[2];
-				//System.out.println("cod " + i + " " + j);
-				//System.out.println("con " + x + " " + y);
 				
-				
-				if ((x != i || y != j) && (Math.abs(type) != Math.abs(newtype)) && x != -1 && y != -1 && table.find(10*x+y) == null ){
+				if ((x != i || y != j) && (Math.abs(type) != Math.abs(newtype)) && table.find(10*x+y) == null){
+					table.insert(10*i + j, 10*i + j);
 					//System.out.println("recurse " + x + " " + y);
-					
-					
-					if (checkNetwork(x, y, newtype, player, step + 1, table)){
+					//table.insert(10*x + y, 10*x + y);
+					boolean result = checkNetwork(x, y, newtype, player, step + 1, table);
+					if (result){
 						return true;
-					}else{
-						//node = node.next();
 					}
-					
-				}else{
-				System.out.println("next");
-				node = node.next();
-				
+					//table.remove(10*x + y);
+
 				}
+				table.remove(10*i + j);
+				//System.out.println("next");
+				node = node.next();
+				//System.out.println("tablesize " + table.size());
+				//table.remove(10*x + y);
+				
 			}
 		}catch(list.InvalidNodeException e){
-			
+			//System.out.println("end");
 			//System.err.println(e);
 		}
 		return false;
-		
+
 	}
-	
+
 	public list.DList connections(int i, int j, int player){
 		list.DList connections = new list.DList();
 		if (check1(i, j, player)[0] != -1){
@@ -259,8 +263,8 @@ public class Board {
 		}
 		return connections;
 	}
-	
-	
+
+
 	/**
 	 * Determines if the player has chips in both goal areas
 	 * @param player
@@ -297,15 +301,15 @@ public class Board {
 			return left && right;
 		}
 	}
-	
-	
+
+
 	//search connected chips in 8 directions
 	//1 for up, 2 for upright, 3 for right, 4 for downright
 	//negative for opposite directions
 	//position[0] is x coordinate, -1 for no connection
 	//position[1] is y coordinate
 	//position[2] is direction
-	
+
 	//case 1
 	public int[] check1(int i, int j, int player){
 		int[] position = {-1, -1, 1};
@@ -321,7 +325,7 @@ public class Board {
 		}
 		return position;
 	}
-	
+
 	//case -1
 	public int[] check11(int i, int j, int player){
 		int[] position = {-1, -1, -1};
@@ -337,7 +341,7 @@ public class Board {
 		}
 		return position;
 	}
-	
+
 	//case 2
 	public int[] check2(int i, int j, int player){
 		int[] position = {-1, -1, 2};
@@ -355,7 +359,7 @@ public class Board {
 		}
 		return position;
 	}
-	
+
 	//case -2
 	public int[] check22(int i, int j, int player){
 		int[] position = {-1,-1, -2};
@@ -373,7 +377,7 @@ public class Board {
 		}
 		return position;
 	}
-	
+
 	//case 3
 	public int[] check3(int i, int j, int player){
 		int[] position = {-1, -1, 3};
@@ -389,7 +393,7 @@ public class Board {
 		}
 		return position;
 	}
-	
+
 	//case -3
 	public int[] check33(int i, int j, int player){
 		int[] position = {-1, -1, -3};
@@ -405,7 +409,7 @@ public class Board {
 		}
 		return position;
 	}
-	
+
 	//case 4
 	public int[] check4(int i, int j, int player){
 		int[] position = {-1, -1, 4};
@@ -423,7 +427,7 @@ public class Board {
 		}
 		return position;
 	}
-	
+
 	//case -4
 	public int[] check44(int i, int j, int player){
 		int[] position = {-1, -1, -4};
@@ -445,8 +449,8 @@ public class Board {
 	public String toString(){
 		return "";
 	}
-	
-	
+
+
 	public static void main(String[] args) {
 		Board b = new Board();
 		b.setElement(6, 0, black);
@@ -465,6 +469,6 @@ public class Board {
 		//list.DList l = b.connections(1, 2, black);
 		//System.out.println(l);
 		//System.out.println(b.connections(5, 5, black));
-		System.out.println(b.connected(black));
+		//System.out.println(b.connected(black));
 	}
 }

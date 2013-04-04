@@ -7,6 +7,6 @@ public class BestMove {
 	
 	public BestMove(){
 		move = null;
-		score = -1000000;
+		score = MachinePlayer.LOSE;
 	}
 }

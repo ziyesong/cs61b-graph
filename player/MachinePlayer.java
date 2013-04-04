@@ -29,7 +29,7 @@ public class MachinePlayer extends Player {
 		this.gameBoard = new Board();
 		this.myColor = color;
 		this.opponentColor = 1 - color;
-		this.searchDepth = 1;//default depth
+		this.searchDepth = 3;//default depth
 	}
 
 	// Creates a machine player with the given color and search depth.  Color is
@@ -48,19 +48,25 @@ public class MachinePlayer extends Player {
 	 * @return True if valid, false if not
 	 */
 	public boolean isValidMove(Move move, int player){
+		//System.out.println(move.toString() + "    " + player);
 		if (player == black && (move.x1 == 0 || move.x1 == 7)){//place black in white goal area
+			//System.out.println("1");
 			return false;
 		}
 		if (player == white && (move.y1 == 0 || move.y1 == 7)){//place white in black goal area
+			//System.out.println("2");
 			return false;
 		}
 		if (gameBoard.elementAt(move.x1, move.y1) >= 0){//occupied or illegal
+			//System.out.println("3");
 			return false;
 		}
 		if (move.moveKind == Move.ADD){//add move
 			if (gameBoard.chips[player] >= 10){
+				//System.out.println("4");
 				return false;
 			}
+			
 			return !gameBoard.clustered(move.x1, move.y1, player);
 		}
 		if (move.moveKind == Move.STEP){//step move
@@ -118,6 +124,7 @@ public class MachinePlayer extends Player {
 	public boolean undoMove(Move move, int player){
 		if (move.moveKind == Move.ADD){
 			gameBoard.setElement(move.x1, move.y1, Board.empty);
+			gameBoard.chips[player]--;//decrease num of chips
 			return true;
 		}
 		if (move.moveKind == Move.STEP){
@@ -187,7 +194,7 @@ public class MachinePlayer extends Player {
 
 		}
 
-		return 5*(myGoalPairs - opGoalPairs) + 2*(myPairs - opPairs);
+		return 5*(myGoalPairs - opGoalPairs) + 2*(myPairs - opPairs) ;
 	}
 
 	/**
@@ -225,7 +232,6 @@ public class MachinePlayer extends Player {
 							if (isValidMove(move, player)){
 								list.insertBack(move);
 							}
-							
 							node = node.next();
 						}
 					}catch (list.InvalidNodeException e){
@@ -240,6 +246,9 @@ public class MachinePlayer extends Player {
 	// Returns a new move by "this" player.  Internally records the move (updates
 	// the internal game board) as a move by "this" player.
 	public Move chooseMove() {
+		//System.out.println("CHOOSEMOVE");
+		//System.out.println(this.toString());
+		
 		Move move = minimax(myColor, searchDepth, LOSE, WIN).move;
 		makeMove(move, myColor);
 		return move;
@@ -277,13 +286,16 @@ public class MachinePlayer extends Player {
 			return myBest;
 		}
 
+		
 		if (player == myColor){
 			myBest.score = alpha;
 		}else {
 			myBest.score = beta;
 		}
 
+		
 		list.DList moves = validMoves(player);
+		//System.out.println(moves);
 		list.ListNode node = moves.front();
 		try{
 			while (true){
@@ -301,6 +313,7 @@ public class MachinePlayer extends Player {
 					myBest.score = reply.score;
 					alpha = reply.score;
 				}
+				
 				if ((player == opponentColor) && (reply.score <= myBest.score)){
 					myBest.move = move;
 					myBest.score = reply.score;

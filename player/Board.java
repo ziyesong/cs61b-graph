@@ -27,6 +27,8 @@ public class Board {
 		board[0][7] = illegal;
 		board[7][0] = illegal;
 		board[7][7] = illegal;
+		chips[0] = 0;
+		chips[1] = 0;
 	}
 
 	public int elementAt(int i, int j){

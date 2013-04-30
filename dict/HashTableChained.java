@@ -137,6 +137,31 @@ public class HashTableChained implements Dictionary {
 		table[index].insertFront(newEntry);
 		size++;
 		
+		//resize
+		if (size > bucketSize) {
+			  int s = bucketSize*2;
+			  while (!isPrime(s)) {
+				  s++;
+			  }
+			  list.DList[] oldTable = table;
+			  bucketSize = s;
+			  table = new list.DList[bucketSize];
+			  for (int i = 0; i < bucketSize; i++) {
+				  table[i] = new list.DList();
+			  }
+			  for (list.DList b : oldTable) {
+				  list.DListNode cur = (list.DListNode) b.front();
+				  while (cur.isValidNode()) {
+					  try {
+						  insert(((Entry) cur.item()).key, ((Entry) cur.item()).value);
+						  cur = (list.DListNode) cur.next();
+					  } catch (list.InvalidNodeException e) {
+					  }
+				  }
+			  }
+		  }
+		//end resize
+		
 		return newEntry;
 	}
 

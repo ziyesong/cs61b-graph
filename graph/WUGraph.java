@@ -198,7 +198,7 @@ public class WUGraph {
 							while(true){
 								curr = curr.next();
 								obj[index] = ((Object[])curr.item())[0];
-								weights[index] = (int)((Object[])curr.item())[2];
+								weights[index] = (Integer)((Object[])curr.item())[2];
 								index++;
 							}
 						}catch(list.InvalidNodeException e){

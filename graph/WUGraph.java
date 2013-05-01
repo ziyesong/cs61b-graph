@@ -105,8 +105,9 @@ public class WUGraph {
 							list.ListNode curr = neighborlist.front();
 							while(true){
 								curr = curr.next();//start from the second node
-								VertexPair pair = new VertexPair(vertex, ((Object[])curr.item())[2]);
+								VertexPair pair = new VertexPair(vertex, ((Object[])curr.item())[0]);
 								EdgeTable.remove(pair);
+								//System.out.println("removing " + pair.object1 + " " + pair.object2);
 								list.ListNode ref = (list.ListNode)(((Object[])curr.item())[1]);//reference
 								if(ref != null){
 									ref.remove();//remove reference from list
@@ -361,11 +362,11 @@ public class WUGraph {
 		g.addVertex(8);
 		g.addVertex(9);
 		//g.addEdge(3, 7, 4);
-		g.addEdge(3, 7, 7);
-		g.addEdge(3, 3, 7);
+		g.addEdge(4, 7, 5);
 		//g.addEdge(3, 3, 7);
 		//g.addEdge(3, 3, 7);
-		g.removeVertex(3);
+		//g.addEdge(3, 3, 7);
+		g.removeVertex(7);
 		//g.addEdge(1, 4, 7);
 		//g.addEdge("C", "D", 3);
 		//g.addEdge("D", "E", 4);
@@ -376,7 +377,7 @@ public class WUGraph {
 		//g.removeEdge("B", "D");
 
 
-		System.out.println(g.isEdge(7, 3));
+		//System.out.println(g.isEdge(3, 3));
 	}
 
 }

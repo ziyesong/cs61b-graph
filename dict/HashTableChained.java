@@ -88,7 +88,8 @@ public class HashTableChained implements Dictionary {
 	int compFunction(int code) {
 		// Replace the following line with your solution.
 		int hashCode = ((13*code + 37) % 77691689) % bucketSize;
-		return hashCode;
+		
+		return Math.abs(hashCode);
 	}
 
 	/** 
@@ -179,8 +180,9 @@ public class HashTableChained implements Dictionary {
 
 	public Entry find(Object key) {
 		// Replace the following line with your solution.
-		int index = compFunction(key.hashCode());
 		
+		int index = compFunction(key.hashCode());
+		//System.out.println(index);
 		if (table[index] != null){
 			ListNode node = table[index].front();
 			try{
@@ -194,6 +196,7 @@ public class HashTableChained implements Dictionary {
 		}else{
 			return null;
 		}
+		
 	}
 
 	/** 

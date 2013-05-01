@@ -108,8 +108,10 @@ public class WUGraph {
 								VertexPair pair = new VertexPair(vertex, ((Object[])curr.item())[2]);
 								EdgeTable.remove(pair);
 								list.ListNode ref = (list.ListNode)(((Object[])curr.item())[1]);//reference
-								ref.remove();//remove reference from list
-								
+								if(ref != null){
+									ref.remove();//remove reference from list
+								}
+
 							}
 						}catch(list.InvalidNodeException e){	
 						}
@@ -230,7 +232,6 @@ public class WUGraph {
 		if (isEdge(u, v)){//always remove first, then add edge
 			removeEdge(u, v);
 		}
-		
 		Edge edge = new Edge(u, v, weight);
 		VertexPair pair = new VertexPair(u, v);
 		EdgeTable.insert(pair, edge);//insert into EdgeTable
@@ -246,6 +247,14 @@ public class WUGraph {
 					vlist = (list.DList)node.item();
 				}
 				if(ulist != null && vlist != null){
+					if(u.equals(v)){//self-edge
+						Object[] obj = new Object[3];
+						obj[0] = u;
+						obj[1] = null;
+						obj[2] = weight;
+						ulist.insertBack(obj);
+						break;
+					}
 					Object[] uobj = new Object[3];
 					uobj[0] = v;
 					uobj[2] = weight;
@@ -288,7 +297,9 @@ public class WUGraph {
 						while(true){
 							curr = curr.next();
 							if (((Object[])curr.item())[0].equals(v)){
-								((list.ListNode)((Object[])curr.item())[1]).remove();//remove (v,u)
+								if(!u.equals(v)){
+									((list.ListNode)((Object[])curr.item())[1]).remove();//remove (v,u)
+								}
 								curr.remove();//remove (u,v)
 							}
 						}
@@ -297,7 +308,7 @@ public class WUGraph {
 				}
 				node = node.next();
 			}
-			
+
 		}catch(list.InvalidNodeException e){
 		}
 	}
@@ -339,23 +350,33 @@ public class WUGraph {
 
 	public static void main(String[] args) {
 		WUGraph g = new WUGraph();
-		g.addVertex("A");
-		g.addVertex("B");
-		g.addVertex("C");
-		g.addVertex("D");
-		g.addVertex("E");
-		g.addEdge("A", "B", 1);
-		g.addEdge("A", "C", 2);
-		g.addEdge("C", "D", 3);
-		g.addEdge("D", "E", 4);
-		g.addEdge("B", "E", 5);
-		g.addEdge("B", "C", 6);
-		g.addEdge("B", "D", 4);
-		g.removeVertex("A");
+		g.addVertex(0);
+		g.addVertex(1);
+		g.addVertex(2);
+		g.addVertex(3);
+		g.addVertex(4);
+		g.addVertex(5);
+		g.addVertex(6);
+		g.addVertex(7);
+		g.addVertex(8);
+		g.addVertex(9);
+		//g.addEdge(3, 7, 4);
+		g.addEdge(3, 7, 7);
+		g.addEdge(3, 3, 7);
+		//g.addEdge(3, 3, 7);
+		//g.addEdge(3, 3, 7);
+		g.removeVertex(3);
+		//g.addEdge(1, 4, 7);
+		//g.addEdge("C", "D", 3);
+		//g.addEdge("D", "E", 4);
+		//g.addEdge("B", "E", 5);
+		//g.addEdge("B", "C", 6);
+		//g.addEdge("B", "D", 4);
+		//g.removeVertex("A");
 		//g.removeEdge("B", "D");
-		
-		
-		System.out.println(g.degree("D"));
+
+
+		System.out.println(g.isEdge(7, 3));
 	}
 
 }
